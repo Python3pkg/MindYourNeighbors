@@ -22,12 +22,12 @@ def _to_filter_on_mac(list_, mapping):
 def logging_results(addr_by_mac, known_machines):
     """Will fire several logging message with levels depending on matching
     status"""
-    rev_machine = {mac: name for name, mac in known_machines.items()} \
+    rev_machine = {mac: name for name, mac in list(known_machines.items())} \
             if known_machines else {}
 
     for loglevel, key in const.LOG_TO_MATCH_RES_MAPPING:
         if logger.isEnabledFor(loglevel):
-            for mac, addrs in addr_by_mac[key].items():
+            for mac, addrs in list(addr_by_mac[key].items()):
                 message = '%s - %s' % (key.name, mac)
                 written = False
                 if mac in rev_machine:
@@ -89,7 +89,7 @@ def check_neighborhood(neighbors, filter_on_regex=None, filter_out_regex=None,
 def handle_processes(processes, config, cache):
     """Will check on processes launched during config browsing and log result
     """
-    for section, process in processes.items():
+    for section, process in list(processes.items()):
         if not config.getboolean(section, 'error_on_stderr', fallback=False):
             continue
         stdout, stderr = process.communicate()
@@ -114,7 +114,7 @@ def browse_config(config, cache):
     now = (now.year, now.month, now.day, now.hour, now.minute)
     excluded_sections = {config.default_section, const.KNOWN_MACHINES_SECTION}
     known_machines = utils.get_known_machines(config)
-    for section in config.values():
+    for section in list(config.values()):
         if section.name in excluded_sections:
             continue
 
